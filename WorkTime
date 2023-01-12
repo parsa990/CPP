@@ -1,0 +1,208 @@
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+	class Time
+	{
+		private:
+			short int d,h,m,s ;
+		public :
+			void show ();
+			Time( int = 0 , int = 0 , int = 0 );
+			void set( int = 0 , int = 0 , int = 0 );
+			void get ( ) ;
+			Time sum ( Time a  ) ;
+											//----   Operator OverLoading Prototype  ------
+			Time operator+  ( Time  ) ;
+			Time operator+  ( int  ) ;
+			Time operator-  ( Time a   ) ;	
+			
+			bool operator<   ( Time a   ) ;		
+			bool operator>   ( Time a   ) ;		
+			bool operator<=  ( Time a   ) ;		
+			bool operator>=  ( Time a   ) ;		
+			bool operator==  ( Time a   ) ;		
+			bool operator!=  ( Time a   ) ;
+										//----------------------------------------------	
+			int t_to_s ( void  ); 			
+			//geter
+			int day()    	{ return d ; }
+			int hour()	    { return h ; }
+			int minute()	{ return m ; }
+			int second()	{ return s ; }
+		
+			void setHour ( int x )
+			{ 
+				h = x ;
+			}
+		
+		friend 	void swapHour ( Time &a , Time &b ) ;
+		friend  Time abs (  Time a );
+	};
+	
+	Time abs (  Time a )
+	{
+		a.d = abs(a.d);
+		a.h = abs(a.h);
+		a.m = abs(a.m);
+		a.s = abs(a.s);
+		
+		return a ;
+	}
+	
+	void swapHour ( Time &a , Time &b )
+	{
+		cout << "\n ---   Swap Hour Running --- \n";
+		int temp = a.h ;
+			a.h  = b.h ;
+			b.h  = temp ;	
+	}
+	
+	void swap ( Time &a , Time &b )
+	{
+		cout << "\n ---   Swap Running --- \n";
+		int temp = a.hour();
+			a.setHour( b.hour() ) ;
+			b.setHour( temp );	   		
+	}
+	
+	
+	class WorkTime 
+	{
+		public :
+			Time in, out ;
+			void get ()
+			{
+				cout << " \n Input Time \n";
+				in.get() ;
+				cout << " \n outut Time \n";
+				out.get() ;
+				cout << "****************************************\n";				
+			}	
+		
+	};
+
+	class info 
+	{
+		public : 
+			int id ;
+			string name;
+			string family ;
+			short int 	level ;				
+	} ;
+
+	class TimeSheet 
+	{
+			public :
+				info      data ;					 // 4 + 2 + 10 + 10 
+				WorkTime  sheet [12][31];  // 8928
+				
+				
+	};
+
+//--------------------------------------------------
+int main()
+{	
+		TimeSheet x[3] ;
+		//x[1].data.id = 4215 ;
+		x[1].sheet[4][8].in.show();
+		cout << "****************************************\n";
+
+	TimeSheet a ;
+	cout << "\n\n  " << sizeof ( a );
+	cout << "\n\n  " << sizeof ( x );
+
+    return 0;
+}
+
+/*
+		WorkTime  x[2] ;
+		WorkTime  timeSheet [12] [31];
+		
+		timeSheet[9][17].get() ;
+		timeSheet[9][17].in.set(h,m,s);
+		cout << "\n Functionality is ";
+		( timeSheet[9][17].out - timeSheet[9][17].in ).show();		
+		
+
+*/
+
+
+	//*******************************************
+	void Time::show()
+	{
+		if ( d > 0 ) cout << d << " Day" ;
+		( d > 1) ? cout << "s ": cout << " " ;
+		
+		cout << h << ":" << m << ":" << s ;
+	}	
+	
+	Time::Time( int a , int b , int c )  //   Constructor
+	{
+		set ( a , b , c );
+	}
+
+	void Time::set( int a , int b , int c )  
+	{
+		d = 0 ;  h = a ; m = b ; s = c ;
+		m += s/60 ;
+		s %= 60 ;
+		
+		h += m/60 ;
+		m %= 60;
+
+		d += h/24 ;
+		h %= 24;
+	}
+	void Time::get()
+	{
+		cout << "Hour : ";   cin >> h ;
+		cout << "Minute : ";   cin >> m ;
+		
+		cout << "Second : ";   cin >> s ;
+		while ( s<0 || s >= 60 )
+		{
+			cout << "Second : ";   cin >> s ;
+		}
+	}	
+
+	Time Time::sum( Time a   )
+	{	
+		//Time temp ;	
+		//temp.set (  0 , 0 , t_to_s() + a.t_to_s() ) ;
+		//return temp ;
+		return Time (  0 , 0 , t_to_s() + a.t_to_s() ) ;
+	}
+									//   Operator OverLoading 
+
+	Time Time::operator+  ( Time a   )
+	{	
+		return Time (  0 , 0 , t_to_s() + a.t_to_s() ) ;
+	}
+
+	Time Time::operator+  ( int a   )
+	{	
+		return Time (  0 , 0 , t_to_s() + a*3600  ) ;  //  Add Hour
+	}
+
+	Time Time::operator-  ( Time a   )
+	{	
+		return Time (  0 , 0 , t_to_s() - a.t_to_s() ) ;
+	}
+	
+	bool Time::operator<   ( Time a )  {	return  (   t_to_s() < a.t_to_s() ) ;	}
+	bool Time::operator>   ( Time a )  {	return  (   t_to_s() > a.t_to_s() ) ;	}
+	bool Time::operator<=  ( Time a )  {	return  (   t_to_s() <= a.t_to_s() ) ;	}
+	bool Time::operator>=  ( Time a )  {	return  (   t_to_s() >= a.t_to_s() ) ;	}
+	bool Time::operator==  ( Time a )  {	return  (   t_to_s() == a.t_to_s() ) ;	}
+	bool Time::operator!=  ( Time a )  {	return  (   t_to_s() != a.t_to_s() ) ;	}
+	
+	
+	int Time::t_to_s ( void  )
+	{
+		return  ( s + m*60 + h*3600 + d*86400 ) ;
+	}
+	
+	
+
